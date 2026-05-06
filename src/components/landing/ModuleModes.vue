@@ -1,76 +1,89 @@
 <template>
-  <SectionScaffold id="modes" variant="modes">
+  <SectionScaffold id="modes" variant="modes" @enter="emit('enter', 'modes')">
     <template #bg>
       <div class="modes-bg"></div>
     </template>
 
     <div class="modes-layout">
       <div class="head reveal">
-        <span class="kicker">3 в одном</span>
-        <h2>Один продукт — три формата интервью</h2>
-        <p>Выбирайте формат под роль и кандидата. AI одинаково корректно проводит сессию в любом из них.</p>
+        <span class="kicker">Avatar & Modes</span>
+        <h2>Один аватар ведёт voice, text и video-интервью</h2>
+        <p>
+          Настройте лицо бренда и формат интервью в одном месте. Режим меняется под роль,
+          а тон коммуникации остаётся единым.
+        </p>
       </div>
 
-      <div class="cards reveal">
-        <article
-          v-for="(m, i) in modes"
-          :key="m.id"
-          class="mode-card"
-          :class="{ flipped: flipped === m.id }"
-          :style="{ '--accent': m.accent, transitionDelay: `${i * 60}ms` }"
-          @mouseenter="flipped = m.id"
-          @mouseleave="flipped = ''"
-          @click="toggleFlip(m.id)"
-        >
-          <div class="card-inner">
-            <div class="card-face front">
-              <div class="card-icon" v-html="m.icon"></div>
-              <h3>{{ m.title }}</h3>
-              <p>{{ m.desc }}</p>
-              <ul class="card-meta">
-                <li v-for="t in m.tags" :key="t">{{ t }}</li>
-              </ul>
-              <div class="flip-hint">
-                <span>Технические детали</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>
-            <div class="card-face back">
-              <div class="back-head">
-                <span>{{ m.title }}</span>
-                <strong>Внутри</strong>
-              </div>
-              <ul class="tech-list">
-                <li v-for="t in m.tech" :key="t.label">
-                  <span class="tech-label">{{ t.label }}</span>
-                  <span class="tech-val">{{ t.val }}</span>
-                </li>
-              </ul>
-              <button class="preview-btn" @click.stop="play(m)">
-                <svg v-if="playingMode !== m.id" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3v18l16-9z"/></svg>
-                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
-                </svg>
-                {{ playingMode === m.id ? 'Стоп' : 'Превью режима' }}
-              </button>
+      <div class="modes-shell reveal">
+        <div class="avatar-preview">
+          <div class="avatar-orb" :class="{ talking: previewing }">
+            <div class="avatar-initials">{{ activeAvatar.initials }}</div>
+            <div class="lipsync" aria-hidden="true">
+              <span v-for="n in 14" :key="n" :style="{ animationDelay: `${n * 0.04}s` }"></span>
             </div>
           </div>
-        </article>
-      </div>
 
-      <div class="recommend reveal">
-        <h4>Какой режим под какую роль?</h4>
-        <div class="rec-table">
-          <div class="rec-row rec-head">
-            <span>Роль</span><span>Voice</span><span>Text</span><span>Video</span>
+          <div class="avatar-meta">
+            <span>Аватар</span>
+            <h3>{{ activeAvatar.name }}</h3>
+            <p>{{ activeAvatar.style }} стиль, {{ activeAvatar.voice }}. Языки: {{ activeAvatar.languages.join(' · ') }}.</p>
           </div>
-          <div v-for="r in recommendations" :key="r.role" class="rec-row">
-            <span>{{ r.role }}</span>
-            <span :class="['rec-cell', r.voice]"><i></i></span>
-            <span :class="['rec-cell', r.text]"><i></i></span>
-            <span :class="['rec-cell', r.video]"><i></i></span>
+
+          <button class="preview-action" type="button" @click="togglePreview">
+            <svg v-if="!previewing" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 3v18l16-9z" />
+            </svg>
+            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
+            </svg>
+            {{ previewing ? 'Стоп' : 'Услышать голос' }}
+          </button>
+        </div>
+
+        <div class="mode-controls">
+          <div class="mode-switch" role="tablist" aria-label="Режим интервью">
+            <button
+              v-for="mode in modes"
+              :key="mode.id"
+              :class="['mode-btn', { active: mode.id === activeModeId }]"
+              type="button"
+              @click="activeModeId = mode.id"
+            >
+              <span v-html="mode.icon"></span>
+              {{ mode.title }}
+            </button>
+          </div>
+
+          <div class="mode-detail">
+            <span class="detail-label">{{ activeMode.title }}</span>
+            <h3>{{ activeMode.headline }}</h3>
+            <p>{{ activeMode.desc }}</p>
+            <ul>
+              <li v-for="item in activeMode.points" :key="item">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <path d="m5 12 5 5L20 7" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="avatar-list" aria-label="Выбор аватара">
+            <button
+              v-for="avatar in avatars"
+              :key="avatar.id"
+              :class="['avatar-tile', { active: avatar.id === activeAvatarId, locked: avatar.locked }]"
+              type="button"
+              @click="selectAvatar(avatar)"
+            >
+              <span class="tile-initials">{{ avatar.initials }}</span>
+              <span>
+                <strong>{{ avatar.name }}</strong>
+                <em>{{ avatar.style }}</em>
+              </span>
+              <small v-if="avatar.locked">Enterprise</small>
+            </button>
           </div>
         </div>
       </div>
@@ -79,300 +92,382 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import SectionScaffold from './shared/SectionScaffold.vue'
 
-const flipped = ref('')
-const playingMode = ref('')
-
-function toggleFlip(id) {
-  flipped.value = flipped.value === id ? '' : id
-}
-
-function play(m) {
-  if (playingMode.value === m.id) {
-    playingMode.value = ''
-    return
-  }
-  playingMode.value = m.id
-  setTimeout(() => { playingMode.value = '' }, 4000)
-}
+const emit = defineEmits(['enter'])
 
 const modes = [
   {
     id: 'voice',
     title: 'Voice',
-    desc: 'AI задаёт вопросы голосом, кандидат отвечает голосом. Самый быстрый и тёплый формат.',
-    accent: '#79e1ff',
+    headline: 'Голосовой скрининг без ожидания свободного слота',
+    desc: 'AI задаёт вопросы голосом, слушает ответы и уточняет детали по сценарию.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke-linecap="round"/></svg>',
-    tags: ['Realtime STT', '<200ms latency', 'ElevenLabs / Yandex'],
-    tech: [
-      { label: 'TTS', val: 'ElevenLabs Flash 2.5' },
-      { label: 'STT', val: 'Web Speech API + Whisper fallback' },
-      { label: 'Интонации', val: 'friendly · professional · neutral' },
-      { label: 'Языки', val: 'RU · EN · 27+' },
-    ],
+    points: ['Realtime STT', 'Latency до 200 ms', 'Голос ElevenLabs или Yandex'],
   },
   {
     id: 'text',
     title: 'Text',
-    desc: 'Чат-формат. Подходит для асинхронных интервью и ролей, где формулировки точнее, чем речь.',
-    accent: '#7c63ff',
+    headline: 'Асинхронный чат для ролей, где важна точность',
+    desc: 'Кандидат отвечает в своём темпе, а рекрутёр получает такой же структурированный отчёт.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-13 8L3 21l1-5a9 9 0 1 1 17-4Z" stroke-linejoin="round"/></svg>',
-    tags: ['Async-friendly', 'История чата', 'Markdown в ответах'],
-    tech: [
-      { label: 'LLM', val: 'Claude Sonnet 4.5 / GPT-4o' },
-      { label: 'Streaming', val: 'WS · token-by-token' },
-      { label: 'Контекст', val: 'до 200k токенов' },
-      { label: 'Code blocks', val: 'syntax highlight + run sandbox' },
-    ],
+    points: ['История чата', 'Code blocks', 'Единый скоринг'],
   },
   {
     id: 'video',
     title: 'Video',
-    desc: 'Полноценный видео-аватар с lip-sync. Для топ-ролей, где важно «человеческое впечатление».',
-    accent: '#b837ff',
+    headline: 'Видео-аватар для ролей, где важен личный контакт',
+    desc: 'Lip-sync и брендированный образ создают ощущение живой первой встречи.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="14" height="12" rx="2"/><path d="m17 10 4-2v8l-4-2z" stroke-linejoin="round"/></svg>',
-    tags: ['SIMLI realtime', 'Fal lip-sync', 'Custom avatars'],
-    tech: [
-      { label: 'Аватар', val: 'SIMLI / Fal lipsync / Media Lab' },
-      { label: 'FPS', val: '24–30 fps · 720p' },
-      { label: 'Кастом', val: 'свой аватар, голос, бренд' },
-      { label: 'Запись', val: 'MP4 + транскрипт + waveform' },
-    ],
+    points: ['SIMLI realtime', '720p запись', 'Custom avatar для Enterprise'],
   },
 ]
 
-const recommendations = [
-  { role: 'Frontend Junior',  voice: 'good', text: 'best', video: 'ok' },
-  { role: 'Backend Senior',   voice: 'best', text: 'good', video: 'good' },
-  { role: 'QA / Manual',      voice: 'good', text: 'best', video: 'ok' },
-  { role: 'Engineering Lead', voice: 'good', text: 'good', video: 'best' },
-  { role: 'Data Scientist',   voice: 'good', text: 'best', video: 'good' },
-  { role: 'C-level / EM',     voice: 'ok',   text: 'good', video: 'best' },
+const avatars = [
+  { id: 'irina', name: 'Ирина', initials: 'ИР', style: 'Профессиональный', voice: 'Marina', languages: ['RU', 'EN'] },
+  { id: 'svetlana', name: 'Светлана', initials: 'СВ', style: 'Дружелюбный', voice: 'Lena', languages: ['RU', 'EN'] },
+  { id: 'alex', name: 'Алекс', initials: 'АЛ', style: 'Нейтральный', voice: 'Alex', languages: ['RU', 'EN', 'KZ'] },
+  { id: 'custom', name: 'Свой бренд', initials: '+', style: 'Кастом', voice: 'Voice cloning', languages: ['Любой'], locked: true },
 ]
+
+const activeModeId = ref('voice')
+const activeAvatarId = ref('irina')
+const previewing = ref(false)
+let previewTimer = 0
+
+const activeMode = computed(() => modes.find((mode) => mode.id === activeModeId.value))
+const activeAvatar = computed(() => avatars.find((avatar) => avatar.id === activeAvatarId.value))
+
+function selectAvatar(avatar) {
+  activeAvatarId.value = avatar.id
+  previewing.value = false
+  window.clearTimeout(previewTimer)
+}
+
+function togglePreview() {
+  previewing.value = !previewing.value
+  window.clearTimeout(previewTimer)
+  if (previewing.value) {
+    previewTimer = window.setTimeout(() => {
+      previewing.value = false
+    }, 4200)
+  }
+}
+
+onBeforeUnmount(() => {
+  window.clearTimeout(previewTimer)
+})
 </script>
 
 <style scoped>
 .modes-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(40% 40% at 90% 10%, rgba(184,55,255,0.18), transparent 65%),
-    radial-gradient(40% 50% at 10% 90%, rgba(121,225,255,0.14), transparent 65%),
-    linear-gradient(180deg, #0a0d28 0%, #14193a 100%);
-}
-
-.modes-layout { display: grid; gap: 56px; }
-
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.head { max-width: 760px; }
-.kicker {
-  display: inline-block; font-size: 12px; font-weight: 800;
-  letter-spacing: 0.18em; text-transform: uppercase; color: #b837ff;
-  padding: 6px 12px; background: rgba(184,55,255,0.12);
-  border-radius: 999px; border: 1px solid rgba(184,55,255,0.3);
-}
-.head h2 { margin-top: 18px; font-size: clamp(34px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.03em; color: #fff; }
-.head p { margin-top: 12px; color: rgba(214,222,255,0.66); font-size: 17px; max-width: 580px; }
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  perspective: 1400px;
-}
-
-.mode-card {
-  position: relative;
-  height: 380px;
-  border-radius: 24px;
-  cursor: pointer;
-  transform-style: preserve-3d;
-}
-
-.card-inner {
-  position: relative;
-  width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.mode-card.flipped .card-inner { transform: rotateY(180deg); }
-
-.card-face {
   position: absolute;
   inset: 0;
-  border-radius: 24px;
-  padding: 28px;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
+  background: transparent;
 }
 
-.front {
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.08);
+.modes-layout {
+  display: grid;
+  gap: 42px;
 }
-.front::before {
+
+.head {
+  max-width: 820px;
+}
+
+.head p {
+  margin: 14px 0 0;
+  max-width: 680px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.modes-shell {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+  gap: 28px;
+  align-items: stretch;
+  border: 1px solid var(--so-line);
+  border-radius: 8px;
+  background: var(--so-surface);
+  padding: 32px;
+}
+
+.avatar-preview {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 22px;
+  padding-right: 28px;
+  border-right: 1px solid var(--so-line);
+  text-align: center;
+}
+
+.avatar-orb {
+  position: relative;
+  width: min(280px, 68vw);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--so-brand);
+  background: var(--so-surface-2);
+  border: 1px solid var(--so-line);
+}
+
+.avatar-orb::after {
   content: '';
   position: absolute;
-  inset: -1px;
+  inset: 18px;
   border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--accent), transparent 60%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  opacity: 0.5;
+  border: 1px solid var(--so-line);
 }
 
-.card-icon {
-  width: 52px; height: 52px;
-  border-radius: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent);
-  margin-bottom: 22px;
+.avatar-initials {
+  color: var(--so-ink);
+  font-size: clamp(54px, 9vw, 88px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
 }
-.card-icon svg { width: 24px; height: 24px; }
 
-.front h3 {
-  font-size: 28px;
-  color: #fff;
-  letter-spacing: -0.02em;
-}
-.front p {
-  margin-top: 12px;
-  color: rgba(214,222,255,0.7);
-  font-size: 14px;
-  line-height: 1.5;
-}
-.card-meta {
-  margin-top: auto;
-  list-style: none;
+.lipsync {
+  position: absolute;
+  bottom: 58px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.card-meta li {
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(214,222,255,0.7);
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  color: var(--so-brand);
+  opacity: 0.35;
 }
 
-.flip-hint {
-  margin-top: 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.lipsync span {
+  display: block;
+  width: 3px;
+  height: 22%;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.avatar-orb.talking .lipsync {
+  opacity: 1;
+}
+
+.avatar-orb.talking .lipsync span {
+  animation: voicebar 0.72s ease-in-out infinite;
+}
+
+@keyframes voicebar {
+  0%,
+  100% {
+    height: 18%;
+  }
+  50% {
+    height: 92%;
+  }
+}
+
+.avatar-meta span,
+.detail-label {
+  color: var(--so-mute);
   font-size: 12px;
-  color: var(--accent);
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.back {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, #14193a) 0%, #0d1130 100%);
-  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  transform: rotateY(180deg);
-  box-shadow: 0 18px 40px -12px color-mix(in srgb, var(--accent) 50%, transparent);
+.avatar-meta h3 {
+  margin: 8px 0 8px;
 }
-.back-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.back-head span { color: var(--accent); font-weight: 800; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
-.back-head strong { color: rgba(255,255,255,0.4); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
 
-.tech-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
+.avatar-meta p {
+  margin: 0;
+  max-width: 360px;
+  line-height: 1.55;
+}
+
+.preview-action,
+.mode-btn,
+.avatar-tile {
+  border: 1px solid var(--so-line);
+  background: var(--so-surface);
+  color: var(--so-ink);
+  cursor: pointer;
+}
+
+.preview-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  border-radius: 999px;
+  padding: 0 20px;
+  color: var(--so-surface);
+  background: var(--so-brand);
+  border-color: var(--so-brand);
+  font-weight: 800;
+}
+
+.mode-controls {
+  display: grid;
+  gap: 22px;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  flex: 1;
 }
-.tech-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.04);
-}
-.tech-label { font-size: 12px; color: rgba(214,222,255,0.6); }
-.tech-val { font-size: 13px; color: #fff; font-weight: 600; text-align: right; }
 
-.preview-btn {
-  margin-top: 14px;
+.mode-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px;
-  border: none;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #0a0d28;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: filter 0.2s;
+  min-height: 46px;
+  border-radius: 999px;
+  font-weight: 800;
 }
-.preview-btn:hover { filter: brightness(1.1); }
 
-.recommend {
-  padding: 28px;
-  border-radius: 22px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+.mode-btn svg {
+  width: 18px;
+  height: 18px;
 }
-.recommend h4 {
-  font-size: 20px;
-  color: #fff;
-  margin-bottom: 18px;
+
+.mode-btn.active {
+  color: var(--so-brand);
+  border-color: var(--so-brand);
 }
-.rec-table { display: grid; gap: 4px; }
-.rec-row {
+
+.mode-detail {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  align-items: center;
-  font-size: 14px;
-  color: rgba(214,222,255,0.78);
+  padding: 28px 0;
+  border-top: 1px solid var(--so-line);
+  border-bottom: 1px solid var(--so-line);
 }
-.rec-row:nth-child(even) { background: rgba(255,255,255,0.02); }
-.rec-head { color: rgba(214,222,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
-.rec-cell { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; }
-.rec-cell i {
-  width: 14px; height: 14px; border-radius: 999px;
-  background: rgba(255,255,255,0.1);
-}
-.rec-cell.best i { background: linear-gradient(135deg, #4ade80, #22c55e); box-shadow: 0 0 0 4px rgba(74,222,128,0.16); }
-.rec-cell.good i { background: linear-gradient(135deg, #79e1ff, #4c46f5); }
-.rec-cell.ok i { background: rgba(255,255,255,0.2); }
-.rec-cell.best { color: #4ade80; }
-.rec-cell.best::after { content: 'Best'; }
-.rec-cell.good::after { content: 'Good'; }
-.rec-cell.ok::after { content: 'OK'; color: rgba(214,222,255,0.4); }
 
-@media (max-width: 1100px) {
-  .cards { grid-template-columns: 1fr; }
-  .mode-card { height: 340px; }
+.mode-detail h3,
+.mode-detail p {
+  margin: 0;
+}
+
+.mode-detail p {
+  max-width: 620px;
+  line-height: 1.55;
+}
+
+.mode-detail ul {
+  display: grid;
+  gap: 10px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mode-detail li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--so-ink);
+  font-size: 14px;
+}
+
+.mode-detail li svg {
+  color: var(--so-brand);
+  flex-shrink: 0;
+}
+
+.avatar-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.avatar-tile {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 74px;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: left;
+}
+
+.avatar-tile.active {
+  border-color: var(--so-brand);
+}
+
+.avatar-tile.locked {
+  color: var(--so-mute);
+}
+
+.tile-initials {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--so-surface-2);
+  color: var(--so-brand);
+  font-weight: 800;
+}
+
+.avatar-tile strong,
+.avatar-tile em {
+  display: block;
+}
+
+.avatar-tile strong {
+  color: var(--so-ink);
+  font-size: 14px;
+}
+
+.avatar-tile em {
+  margin-top: 2px;
+  color: var(--so-mute);
+  font-style: normal;
+  font-size: 12px;
+}
+
+.avatar-tile small {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  color: var(--so-mute);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1050px) {
+  .modes-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .avatar-preview {
+    padding-right: 0;
+    padding-bottom: 28px;
+    border-right: 0;
+    border-bottom: 1px solid var(--so-line);
+  }
+}
+
+@media (max-width: 640px) {
+  .modes-shell {
+    padding: 22px;
+  }
+
+  .mode-switch,
+  .avatar-list {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

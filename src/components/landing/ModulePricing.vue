@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import SectionScaffold from './shared/SectionScaffold.vue'
 
 const annual = ref(false)
@@ -154,9 +154,9 @@ const addons = [
 .pr-bg {
   position: absolute; inset: 0;
   background:
-    radial-gradient(50% 50% at 50% 0%, rgba(184,55,255,0.18), transparent 60%),
-    radial-gradient(40% 50% at 0% 100%, rgba(121,225,255,0.14), transparent 60%),
-    linear-gradient(180deg, #0e1230 0%, #14193a 100%);
+    radial-gradient(50% 50% at 50% 0%, color-mix(in srgb, var(--so-brand) 12%, transparent), transparent 60%),
+    radial-gradient(40% 50% at 0% 100%, color-mix(in srgb, var(--so-brand) 10%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--so-surface) 0%, var(--so-surface) 100%);
 }
 
 .pr-layout { display: grid; gap: 36px; }
@@ -169,20 +169,20 @@ const addons = [
 .head { max-width: 760px; }
 .kicker {
   display: inline-block; font-size: 12px; font-weight: 800;
-  letter-spacing: 0.18em; text-transform: uppercase; color: #b837ff;
-  padding: 6px 12px; background: rgba(184,55,255,0.12);
-  border-radius: 999px; border: 1px solid rgba(184,55,255,0.3);
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--so-brand);
+  padding: 6px 12px; background: color-mix(in srgb, var(--so-brand) 12%, transparent);
+  border-radius: 999px; border: 1px solid color-mix(in srgb, var(--so-brand) 12%, transparent);
 }
-.head h2 { margin-top: 18px; font-size: clamp(34px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.03em; color: #fff; }
-.head p { margin-top: 12px; color: rgba(214,222,255,0.66); font-size: 17px; }
+.head h2 { margin-top: 18px; font-size: clamp(34px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.03em; color: var(--so-surface); }
+.head p { margin-top: 12px; color: var(--so-mute); font-size: 17px; }
 
 .billing-toggle {
   display: inline-flex;
   gap: 4px;
   padding: 4px;
   border-radius: 14px;
-  background: rgba(8,10,30,0.6);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent;
+  border: 1px solid var(--so-surface);
   width: fit-content;
 }
 .billing-toggle button {
@@ -191,7 +191,7 @@ const addons = [
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: rgba(214,222,255,0.55);
+  color: var(--so-mute);
   font: inherit;
   font-weight: 700;
   font-size: 13px;
@@ -202,15 +202,15 @@ const addons = [
   gap: 8px;
 }
 .billing-toggle button.active {
-  background: linear-gradient(135deg, #2c4dff, #b837ff);
-  color: #fff;
-  box-shadow: 0 8px 20px -6px rgba(124,99,255,0.5);
+  background: var(--so-brand);
+  color: var(--so-surface);
+  box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--so-brand) 12%, transparent);
 }
 .save-badge {
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(74,222,128,0.18);
-  color: #4ade80;
+  background: color-mix(in srgb, var(--so-brand) 10%, transparent);
+  color: var(--so-brand);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -227,8 +227,8 @@ const addons = [
   position: relative;
   padding: 32px;
   border-radius: 24px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, var(--so-surface), var(--so-surface));
+  border: 1px solid var(--so-surface);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -237,9 +237,9 @@ const addons = [
 .plan:hover { transform: translateY(-4px); }
 
 .plan.featured {
-  background: linear-gradient(180deg, rgba(124,99,255,0.18), rgba(184,55,255,0.08));
-  border-color: rgba(124,99,255,0.5);
-  box-shadow: 0 28px 60px -20px rgba(124,99,255,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--so-brand) 12%, transparent), color-mix(in srgb, var(--so-brand) 12%, transparent));
+  border-color: color-mix(in srgb, var(--so-brand) 12%, transparent);
+  box-shadow: 0 28px 60px -20px color-mix(in srgb, var(--so-brand) 12%, transparent), inset 0 1px 0 var(--so-surface);
   transform: scale(1.04);
 }
 .plan.featured:hover { transform: scale(1.04) translateY(-4px); }
@@ -250,25 +250,25 @@ const addons = [
   transform: translateX(-50%);
   padding: 6px 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #2c4dff, #b837ff);
-  color: #fff;
+  background: var(--so-brand);
+  color: var(--so-surface);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  box-shadow: 0 12px 28px -8px rgba(124,99,255,0.6);
+  box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--so-brand) 12%, transparent);
 }
 
 .plan-name {
-  font-family: 'Space Grotesk';
+  font-family: inherit;
   font-size: 22px;
-  color: #fff;
+  color: var(--so-surface);
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 .plan-tag {
   margin-top: 4px;
-  color: rgba(214,222,255,0.6);
+  color: var(--so-mute);
   font-size: 13px;
 }
 
@@ -279,11 +279,11 @@ const addons = [
   flex-wrap: wrap;
 }
 .plan-price strong {
-  font-family: 'Space Grotesk';
+  font-family: inherit;
   font-size: clamp(40px, 4vw, 54px);
   font-weight: 800;
   letter-spacing: -0.04em;
-  color: #fff;
+  color: var(--so-surface);
   line-height: 1;
   display: inline-flex;
   align-items: baseline;
@@ -294,13 +294,13 @@ const addons = [
   margin-right: 2px;
 }
 .plan.featured .plan-price strong {
-  background: linear-gradient(120deg, #79e1ff, #b9a8ff, #ff5bd5);
+  background: linear-gradient(120deg, var(--so-brand), var(--so-brand), var(--so-brand));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .custom-price { font-size: 36px !important; }
-.period { color: rgba(214,222,255,0.5); font-size: 13px; }
+.period { color: var(--so-mute); font-size: 13px; }
 
 .price-enter-from { opacity: 0; transform: translateY(8px); }
 .price-enter-active { transition: 0.3s; }
@@ -320,17 +320,17 @@ const addons = [
   transition: 0.2s;
 }
 .cta-primary {
-  background: linear-gradient(135deg, #2c4dff, #b837ff);
-  color: #fff;
-  box-shadow: 0 14px 30px -8px rgba(124,99,255,0.55);
+  background: var(--so-brand);
+  color: var(--so-surface);
+  box-shadow: none;
 }
 .cta-primary:hover { transform: translateY(-1px); }
 .cta-light {
-  background: rgba(255,255,255,0.06);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--so-surface);
+  color: var(--so-surface);
+  border: 1px solid var(--so-surface);
 }
-.cta-light:hover { background: rgba(255,255,255,0.12); }
+.cta-light:hover { background: var(--so-surface); }
 
 .plan-features {
   list-style: none;
@@ -343,12 +343,12 @@ const addons = [
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #e7ecff;
+  color: var(--so-ink);
   font-size: 13px;
 }
 .plan-features li svg {
-  color: #4ade80;
-  background: rgba(74,222,128,0.16);
+  color: var(--so-brand);
+  background: color-mix(in srgb, var(--so-brand) 10%, transparent);
   padding: 3px;
   border-radius: 999px;
   flex-shrink: 0;
@@ -356,23 +356,23 @@ const addons = [
 
 .plan-compare {
   padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--so-surface);
   font-size: 12px;
-  color: rgba(214,222,255,0.5);
+  color: var(--so-mute);
 }
 
 .addons {
   padding: 28px;
   border-radius: 22px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--so-surface);
+  border: 1px solid var(--so-surface);
 }
 .addons-title {
   display: block;
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(214,222,255,0.5);
+  color: var(--so-mute);
   font-weight: 800;
   margin-bottom: 18px;
 }
@@ -384,11 +384,11 @@ const addons = [
 .addon {
   padding: 14px 16px;
   border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--so-surface);
+  border: 1px solid var(--so-surface);
 }
-.addon strong { display: block; color: #fff; font-size: 14px; }
-.addon span { display: block; margin-top: 4px; color: rgba(214,222,255,0.6); font-size: 12px; }
+.addon strong { display: block; color: var(--so-surface); font-size: 14px; }
+.addon span { display: block; margin-top: 4px; color: var(--so-mute); font-size: 12px; }
 
 @media (max-width: 1100px) {
   .plans { grid-template-columns: 1fr; }
@@ -398,5 +398,111 @@ const addons = [
 }
 @media (max-width: 600px) {
   .addons-row { grid-template-columns: 1fr; }
+}
+
+/* Palette pass */
+.pr-bg {
+  background: transparent;
+}
+
+.head h2 {
+  color: var(--so-ink);
+  font-size: clamp(36px, 4.5vw, 56px);
+}
+
+.head p,
+.plan-tag,
+.period,
+.plan-compare,
+.addons-title,
+.addon span {
+  color: var(--so-mute);
+}
+
+.kicker {
+  color: var(--so-mute);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  letter-spacing: 0.12em;
+}
+
+.billing-toggle,
+.plan,
+.addons,
+.addon {
+  background: var(--so-surface);
+  border-color: var(--so-line);
+  box-shadow: none;
+}
+
+.billing-toggle,
+.plan,
+.addons {
+  border-radius: 8px;
+}
+
+.billing-toggle button {
+  background: var(--so-surface);
+  color: var(--so-mute);
+}
+
+.billing-toggle button.active {
+  background: var(--so-surface);
+  color: var(--so-brand);
+  box-shadow: none;
+  border: 1px solid var(--so-brand);
+}
+
+.save-badge,
+.featured-tag {
+  background: var(--so-surface);
+  color: var(--so-brand);
+  border: 1px solid var(--so-line);
+  box-shadow: none;
+}
+
+.plan:hover,
+.plan.featured,
+.plan.featured:hover {
+  transform: none;
+}
+
+.plan.featured {
+  background: var(--so-surface);
+  border-color: var(--so-brand);
+}
+
+.plan-name,
+.plan-price strong,
+.addon strong,
+.plan-features li,
+.plan.featured .plan-price strong {
+  color: var(--so-ink);
+  background: none;
+}
+
+.plan-features li svg {
+  color: var(--so-brand);
+  background: var(--so-surface);
+}
+
+.cta-primary {
+  background: var(--so-brand);
+  color: var(--so-surface);
+  box-shadow: none;
+}
+
+.cta-light {
+  background: var(--so-surface);
+  color: var(--so-ink);
+  border-color: var(--so-line);
+}
+
+.cta-light:hover,
+.cta-primary:hover {
+  transform: none;
+  border-color: var(--so-brand);
 }
 </style>
