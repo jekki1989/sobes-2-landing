@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
+  /* Palette */
   --so-surface: #ffffff;
   --so-surface-2: #f7f8fb;
   --so-ink: #0d1020;
@@ -9,6 +10,35 @@
   --so-brand: #2a3fe0;
   --so-alert: #e85a6b;
   --so-alert-bg: #fff5f5;
+
+  /* Tints (single source for hover/badge backgrounds) */
+  --so-brand-soft: color-mix(in srgb, var(--so-brand) 8%, var(--so-surface));
+  --so-brand-hover: color-mix(in srgb, var(--so-brand) 86%, var(--so-ink));
+
+  /* Radii */
+  --so-radius-sm: 8px;
+  --so-radius-md: 14px;
+  --so-radius-lg: 24px;
+
+  /* Shadows */
+  --so-shadow-sm: 0 1px 2px rgba(13, 16, 32, 0.06);
+  --so-shadow-md: 0 12px 32px -16px rgba(13, 16, 32, 0.18);
+  --so-shadow-lg: 0 28px 60px -24px color-mix(in srgb, var(--so-brand) 28%, transparent);
+
+  /* Gaps */
+  --so-gap-1: 6px;
+  --so-gap-2: 12px;
+  --so-gap-3: 20px;
+  --so-gap-4: 28px;
+  --so-gap-5: 42px;
+  --so-gap-6: 56px;
+
+  /* Controls */
+  --so-control-h: 44px;
+  --so-control-h-lg: 56px;
+
+  /* Motion */
+  --so-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -46,4 +76,10 @@ input {
 
 button {
   letter-spacing: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--so-brand);
+  outline-offset: 2px;
+  border-radius: inherit;
 }
