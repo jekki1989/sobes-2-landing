@@ -50,16 +50,32 @@ onBeforeUnmount(() => observer?.disconnect())
 
 <style scoped>
 .landing-section {
+  --section-gap: clamp(72px, 7.5vw, 112px);
   position: relative;
-  min-height: 100vh;
   width: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
+  background: transparent;
+  color: var(--so-ink);
+  padding: calc(var(--section-gap) / 2) 0;
+}
+
+.landing-section + .landing-section {
+  border-top: 0;
+}
+
+.landing-section + .landing-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1400px, calc(100% - 80px));
+  border-top: 1px solid rgba(13, 16, 32, 0.05);
+  pointer-events: none;
 }
 
 .section-bg {
@@ -73,7 +89,12 @@ onBeforeUnmount(() => observer?.disconnect())
   position: relative;
   z-index: 1;
   width: min(1400px, calc(100% - 80px));
-  padding: 80px 0;
+}
+
+.landing-section :deep(.reveal) {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .landing-section.is-visible :deep(.reveal) {
@@ -81,15 +102,40 @@ onBeforeUnmount(() => observer?.disconnect())
   transform: translate3d(0, 0, 0);
 }
 
+.landing-section :deep(.kicker) {
+  display: none;
+}
+
+.landing-section :deep(h2) {
+  margin: 18px 0 0;
+  color: var(--so-ink);
+  font-size: clamp(36px, 4.5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.landing-section :deep(h3) {
+  color: var(--so-ink);
+  font-size: clamp(22px, 2.2vw, 28px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.landing-section :deep(p) {
+  color: var(--so-mute);
+}
+
 @media (max-width: 900px) {
   .landing-section {
-    min-height: auto;
-    padding: 64px 0;
-    scroll-snap-align: none;
+    --section-gap: 56px;
   }
+
+  .landing-section + .landing-section::before {
+    width: min(1320px, calc(100% - 32px));
+  }
+
   .section-inner {
     width: min(1320px, calc(100% - 32px));
-    padding: 32px 0;
   }
 }
 </style>

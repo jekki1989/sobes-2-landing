@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
+:root {
+  --so-surface: #ffffff;
+  --so-surface-2: #f7f8fb;
+  --so-ink: #0d1020;
+  --so-mute: #5a5f78;
+  --so-line: #eceef5;
+  --so-brand: #2a3fe0;
+  --so-alert: #e85a6b;
+  --so-alert-bg: #fff5f5;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -10,11 +21,29 @@ body,
   min-height: 100%;
 }
 
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: #ffffff;
-  color: #0d1020;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, color-mix(in srgb, var(--so-brand) 12%, transparent) 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 30%, color-mix(in srgb, var(--so-brand) 7%, transparent) 0%, transparent 60%),
+    linear-gradient(180deg, var(--so-surface-2) 0%, var(--so-surface) 780px);
+  background-attachment: fixed;
+  color: var(--so-ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  letter-spacing: 0;
 }

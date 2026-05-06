@@ -1,23 +1,15 @@
 <template>
   <div class="page landing-page">
-    <ScrollProgress />
-    <CursorGlow />
+    <ScrollProgress :sections="sectionsForProgress" :active-id="activeSection" />
 
     <header class="landing-header" :class="{ scrolled: isScrolled }">
       <div class="container landing-header-inner">
         <router-link to="/" class="landing-brand" aria-label="StageOne home">
           <span class="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="landing-brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#79e1ff" />
-                  <stop offset="50%" stop-color="#6c88ff" />
-                  <stop offset="100%" stop-color="#4f46e5" />
-                </linearGradient>
-              </defs>
-              <path d="M20 2.8 35 11.4v17.2L20 37.2 5 28.6V11.4L20 2.8Z" fill="url(#landing-brand-gradient)" opacity="0.35" />
-              <path d="M20 7.7 30.7 13.8v12.4L20 32.3 9.3 26.2V13.8L20 7.7Z" fill="url(#landing-brand-gradient)" />
-              <path d="M20 13.2 25.6 16.5v7L20 26.8l-5.6-3.3v-7L20 13.2Z" fill="#ffffff" opacity="0.9" />
+              <path d="M20 2.8 35 11.4v17.2L20 37.2 5 28.6V11.4L20 2.8Z" fill="currentColor" opacity="0.16" />
+              <path d="M20 7.7 30.7 13.8v12.4L20 32.3 9.3 26.2V13.8L20 7.7Z" fill="currentColor" />
+              <path d="M20 13.2 25.6 16.5v7L20 26.8l-5.6-3.3v-7L20 13.2Z" fill="var(--so-surface)" opacity="0.95" />
             </svg>
           </span>
           <span class="brand-name">StageOne</span>
@@ -30,18 +22,16 @@
       </div>
     </header>
 
-    <SideRail :sections="sectionsForRail" :active-id="activeSection" @navigate="onNavigate" />
-
     <main class="landing-main">
       <section id="hero" class="hero hero--motion">
         <div class="container hero__inner">
           <div class="hero__badge">
             <span class="hero__badge-icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M4 2h8v3a4 4 0 0 1-8 0V2Z" fill="#e85a6b" />
-                <path d="M2 3h2v2a1 1 0 0 1-2 0V3ZM12 3h2v2a1 1 0 0 1-2 0V3Z" stroke="#e85a6b" stroke-width="1" fill="none" />
-                <path d="M6 11h4v2H6z" fill="#e85a6b" />
-                <path d="M5 13h6v1H5z" fill="#e85a6b" />
+                <path d="M4 2h8v3a4 4 0 0 1-8 0V2Z" fill="currentColor" />
+                <path d="M2 3h2v2a1 1 0 0 1-2 0V3ZM12 3h2v2a1 1 0 0 1-2 0V3Z" stroke="currentColor" stroke-width="1" fill="none" />
+                <path d="M6 11h4v2H6z" fill="currentColor" />
+                <path d="M5 13h6v1H5z" fill="currentColor" />
               </svg>
             </span>
             <span class="hero__badge-text">
@@ -79,61 +69,115 @@
         </div>
       </section>
 
-      <ModulePain @enter="setActive" />
-      <ModuleLiveDemo @enter="setActive" />
+      <section v-show="!hideRhythmStrip" class="rhythm-strip" aria-label="Показатель StageOne">
+        <div class="rhythm-strip__inner">
+          <span>1000+ интервью в месяц</span>
+        </div>
+      </section>
       <ModulePipeline @enter="setActive" />
       <ModuleModes @enter="setActive" />
-      <ModuleAvatarLab @enter="setActive" />
-      <ModuleAudience @enter="setActive" />
-      <ModuleROI @enter="setActive" />
-      <ModuleCompare @enter="setActive" />
-      <ModuleSecurity @enter="setActive" />
+      <ModuleAudience />
+      <ModulePain @enter="setActive" />
+      <ModuleSecurity />
       <ModulePricing @enter="setActive" />
       <ModuleFAQ @enter="setActive" />
     </main>
+
+    <footer class="landing-footer" aria-label="Подвал сайта">
+      <div class="container landing-footer-inner">
+        <div class="landing-footer-grid">
+          <div class="landing-footer-col landing-footer-col--brand">
+            <router-link to="/" class="landing-footer-brand" aria-label="StageOne home">
+              <span class="landing-footer-mark" aria-hidden="true">
+                <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="footer-brand-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#79e1ff" />
+                      <stop offset="50%" stop-color="#6c88ff" />
+                      <stop offset="100%" stop-color="#4f46e5" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M20 2.8 35 11.4v17.2L20 37.2 5 28.6V11.4L20 2.8Z" fill="url(#footer-brand-gradient)" opacity="0.35" />
+                  <path d="M20 7.7 30.7 13.8v12.4L20 32.3 9.3 26.2V13.8L20 7.7Z" fill="url(#footer-brand-gradient)" />
+                  <path d="M20 13.2 25.6 16.5v7L20 26.8l-5.6-3.3v-7L20 13.2Z" fill="var(--so-surface)" opacity="0.95" />
+                </svg>
+              </span>
+              <strong>StageOne</strong>
+            </router-link>
+            <p>AI-платформа для технических интервью. Скрининг, видеоаватар, отчёты — в одном месте.</p>
+            <a class="landing-footer-mail" href="mailto:hello@stageone.ai">hello@stageone.ai</a>
+          </div>
+
+          <nav class="landing-footer-col" aria-label="Продукт">
+            <span class="landing-footer-col__title">Продукт</span>
+            <ul>
+              <li><a href="#demo">Live Demo</a></li>
+              <li><a href="#pipeline">Pipeline</a></li>
+              <li><a href="#modes">Avatar &amp; Modes</a></li>
+              <li><a href="#cost">Стоимость</a></li>
+              <li><a href="#pricing">Тарифы</a></li>
+            </ul>
+          </nav>
+
+          <nav class="landing-footer-col" aria-label="Компания">
+            <span class="landing-footer-col__title">Компания</span>
+            <ul>
+              <li><a href="#audience">Для кого</a></li>
+              <li><a href="#security">Безопасность</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><router-link to="/register">Регистрация</router-link></li>
+              <li><router-link to="/login">Войти</router-link></li>
+            </ul>
+          </nav>
+
+          <nav class="landing-footer-col" aria-label="Юридическое">
+            <span class="landing-footer-col__title">Юридическое</span>
+            <ul>
+              <li><a href="#">Политика конфиденциальности</a></li>
+              <li><a href="#">Условия использования</a></li>
+              <li><a href="#">Обработка данных (152-ФЗ)</a></li>
+              <li><a href="#">Cookies</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="landing-footer-bottom">
+          <span class="landing-footer-copy">© 2026 StageOne. Все права защищены.</span>
+          <span class="landing-footer-status">
+            <i class="landing-footer-dot" aria-hidden="true"></i>
+            Все системы работают штатно
+          </span>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import ModulePain from '../components/landing/ModulePain.vue'
-import ModuleLiveDemo from '../components/landing/ModuleLiveDemo.vue'
 import ModulePipeline from '../components/landing/ModulePipeline.vue'
 import ModuleModes from '../components/landing/ModuleModes.vue'
-import ModuleAvatarLab from '../components/landing/ModuleAvatarLab.vue'
 import ModuleAudience from '../components/landing/ModuleAudience.vue'
-import ModuleROI from '../components/landing/ModuleROI.vue'
-import ModuleCompare from '../components/landing/ModuleCompare.vue'
 import ModuleSecurity from '../components/landing/ModuleSecurity.vue'
 import ModulePricing from '../components/landing/ModulePricing.vue'
 import ModuleFAQ from '../components/landing/ModuleFAQ.vue'
 import ScrollProgress from '../components/landing/shared/ScrollProgress.vue'
-import SideRail from '../components/landing/shared/SideRail.vue'
-import CursorGlow from '../components/landing/shared/CursorGlow.vue'
 
-const sectionsForRail = [
+const sectionsForProgress = [
   { id: 'hero', label: 'Главная' },
-  { id: 'pain', label: 'Боль' },
-  { id: 'demo', label: 'Live Demo' },
   { id: 'pipeline', label: 'Pipeline' },
-  { id: 'modes', label: 'Режимы' },
-  { id: 'avatar-lab', label: 'Avatar Lab' },
-  { id: 'audience', label: 'Кому' },
-  { id: 'roi', label: 'ROI' },
-  { id: 'compare', label: 'До / После' },
-  { id: 'security', label: 'Безопасность' },
+  { id: 'modes', label: 'Avatar & Modes' },
+  { id: 'cost', label: 'Стоимость' },
   { id: 'pricing', label: 'Тарифы' },
   { id: 'faq', label: 'FAQ' },
 ]
 
 const activeSection = ref('hero')
 const isScrolled = ref(false)
+const hideRhythmStrip = true
 
 function setActive(id) {
-  activeSection.value = id
-}
-
-function onNavigate(id) {
   activeSection.value = id
 }
 
@@ -203,13 +247,14 @@ onBeforeUnmount(() => {
 <style scoped>
 .landing-page {
   min-height: 100vh;
-  background: #ffffff;
-  color: #0d1020;
+  background: transparent;
+  color: var(--so-ink);
   font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 .container {
-  width: min(1340px, calc(100% - 96px));
+  width: min(1400px, calc(100% - 80px));
+  margin-inline: auto;
 }
 
 .landing-main {
@@ -217,19 +262,178 @@ onBeforeUnmount(() => {
   z-index: 2;
 }
 
+.landing-footer {
+  margin-top: 0;
+  padding: 0 0 40px;
+  background: linear-gradient(180deg, var(--so-surface) 0%, color-mix(in srgb, var(--so-brand) 3%, var(--so-surface)) 100%);
+}
+
+.landing-footer-inner {
+  border-top: 1px solid var(--so-line);
+  padding-top: clamp(48px, 5vw, 72px);
+}
+
+.landing-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 56px 40px;
+  align-items: start;
+}
+
+.landing-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.landing-footer-col--brand {
+  gap: 18px;
+  max-width: 380px;
+}
+
+.landing-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--so-ink);
+}
+
+.landing-footer-brand:focus,
+.landing-footer-brand:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.landing-footer-mark {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+}
+
+.landing-footer-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.landing-footer-brand strong {
+  color: var(--so-ink);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.landing-footer-col--brand p {
+  margin: 0;
+  color: var(--so-mute);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.landing-footer-mail {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--so-line);
+  background: var(--so-surface);
+  color: var(--so-brand);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.landing-footer-mail:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 35%, var(--so-line));
+  background: color-mix(in srgb, var(--so-brand) 4%, var(--so-surface));
+  color: color-mix(in srgb, var(--so-brand) 86%, var(--so-ink));
+}
+
+.landing-footer-col__title {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--so-ink);
+}
+
+.landing-footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.landing-footer-col li {
+  margin: 0;
+}
+
+.landing-footer-col a {
+  color: var(--so-mute);
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.landing-footer-col a:hover {
+  color: var(--so-brand);
+}
+
+.landing-footer-bottom {
+  margin-top: clamp(40px, 4vw, 56px);
+  padding-top: 20px;
+  border-top: 1px solid var(--so-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.landing-footer-copy {
+  color: var(--so-mute);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.landing-footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--so-mute);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.landing-footer-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #1ea674;
+  box-shadow: 0 0 0 4px rgba(30, 166, 116, 0.14);
+}
+
 .landing-header {
   position: sticky;
   top: 0;
   z-index: 40;
   border-bottom: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.82);
+  background: color-mix(in srgb, var(--so-surface) 82%, transparent);
   backdrop-filter: saturate(160%) blur(10px);
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
 .landing-header.scrolled {
-  border-bottom-color: #e6e8f1;
-  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: var(--so-line);
+  background: color-mix(in srgb, var(--so-surface) 92%, transparent);
 }
 
 .landing-header-inner {
@@ -245,7 +449,19 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 14px;
   text-decoration: none;
-  color: #0d1020;
+  color: var(--so-brand);
+}
+
+.landing-brand:focus,
+.landing-brand:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+@media (min-width: 1101px) {
+  .landing-brand {
+    margin-left: 28px;
+  }
 }
 
 .brand-mark {
@@ -264,6 +480,7 @@ onBeforeUnmount(() => {
   font-size: 30px;
   font-weight: 800;
   letter-spacing: 0;
+  color: var(--so-ink);
 }
 
 .header-actions {
@@ -274,13 +491,13 @@ onBeforeUnmount(() => {
 
 .header-link {
   text-decoration: none;
-  color: #2b2f44;
+  color: var(--so-mute);
   font-weight: 600;
   font-size: 15px;
 }
 
 .header-link:hover {
-  color: #2a3fe0;
+  color: var(--so-brand);
 }
 
 .header-cta {
@@ -290,25 +507,34 @@ onBeforeUnmount(() => {
   justify-content: center;
   border-radius: 999px;
   padding: 0 18px;
-  background: #2a3fe0;
-  box-shadow: 0 10px 24px rgba(42, 63, 224, 0.28);
-  color: #ffffff;
+  background: var(--so-brand);
+  border: 1px solid var(--so-brand);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--so-ink) 4%, transparent);
+  color: var(--so-surface);
   font-weight: 700;
   text-decoration: none;
 }
 
 .header-cta:hover {
-  background: #1f30b5;
+  background: color-mix(in srgb, var(--so-brand) 86%, var(--so-ink));
 }
 
 .hero {
   position: relative;
   overflow: hidden;
-  padding: clamp(40px, 8vw, 96px) 0 clamp(56px, 8vw, 120px);
-  background:
-    radial-gradient(1200px 600px at 20% -10%, #e6ecff 0%, rgba(230, 236, 255, 0) 60%),
-    radial-gradient(900px 500px at 100% 30%, #f1e9ff 0%, rgba(241, 233, 255, 0) 60%),
-    linear-gradient(180deg, #f7f8ff 0%, #ffffff 80%);
+  padding: clamp(28px, 5vw, 64px) 0 clamp(24px, 4vw, 48px);
+  background: transparent;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(1400px, calc(100% - 80px));
+  border-top: 1px solid rgba(13, 16, 32, 0.05);
+  pointer-events: none;
 }
 
 .hero--motion .hero__inner {
@@ -325,9 +551,9 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: #fff5f5;
-  border: 1px solid #ffd9dd;
-  color: #e85a6b;
+  background: var(--so-alert-bg);
+  border: 1px solid color-mix(in srgb, var(--so-alert) 22%, var(--so-alert-bg));
+  color: var(--so-alert);
   border-radius: 14px;
   padding: 10px 18px;
   font-weight: 700;
@@ -379,7 +605,7 @@ onBeforeUnmount(() => {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  color: #2a3fe0;
+  color: var(--so-brand);
 }
 
 .hero__line {
@@ -414,10 +640,10 @@ onBeforeUnmount(() => {
 .hero__type-frame {
   position: relative;
   display: inline-block;
-  border: 1.5px dashed #b9c0d4;
+  border: 1.5px dashed var(--so-line);
   border-radius: 6px;
   padding: 0 0.12em;
-  color: #b8bccd;
+  color: var(--so-mute);
 }
 
 .hero__type-text {
@@ -435,8 +661,8 @@ onBeforeUnmount(() => {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #fff;
-  border: 1.5px solid #6b78a8;
+  background: var(--so-surface);
+  border: 1.5px solid var(--so-mute);
   border-radius: 2px;
 }
 
@@ -485,7 +711,7 @@ onBeforeUnmount(() => {
 }
 
 .hero__sub--motion {
-  color: #5a5f78;
+  color: var(--so-mute);
   font-size: clamp(15px, 1.4vw, 18px);
   max-width: 640px;
   margin: 6px auto 0;
@@ -508,262 +734,55 @@ onBeforeUnmount(() => {
 }
 
 .btn--pill {
-  background: #2a3fe0;
-  color: #fff;
-  box-shadow: 0 10px 24px rgba(42, 63, 224, 0.28);
+  background: var(--so-brand);
+  color: var(--so-surface);
+  border: 1px solid var(--so-brand);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--so-ink) 4%, transparent);
 }
 
 .btn--pill:hover {
-  background: #1f30b5;
+  background: color-mix(in srgb, var(--so-brand) 86%, var(--so-ink));
 }
 
-/* Unified palette for all dynamic sections below hero */
-.landing-page :deep(.cursor-glow) {
-  display: none !important;
+.rhythm-strip {
+  min-height: 104px;
+  display: flex;
+  align-items: center;
+  background: transparent;
 }
 
-.landing-page :deep(.scroll-progress) {
-  background: rgba(42, 63, 224, 0.08) !important;
+.rhythm-strip__inner {
+  width: min(1400px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 24px 0;
+  border-top: 1px solid var(--so-line);
+  border-bottom: 1px solid var(--so-line);
 }
 
-.landing-page :deep(.progress-bar) {
-  background: linear-gradient(90deg, #2a3fe0, #6c88ff) !important;
+.rhythm-strip span {
+  display: block;
+  color: var(--so-brand);
+  font-size: clamp(24px, 3.8vw, 44px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
 }
 
-.landing-page :deep(.side-rail ul) {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid #e6e8f1 !important;
-}
+@media (max-width: 1024px) {
+  .landing-footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 32px;
+  }
 
-.landing-page :deep(.rail-dot .dot) {
-  background: #b7bfd8 !important;
-}
-
-.landing-page :deep(.rail-dot.active .dot) {
-  background: #2a3fe0 !important;
-  box-shadow: 0 0 0 4px rgba(42, 63, 224, 0.18) !important;
-}
-
-.landing-page :deep(.rail-dot .label) {
-  background: #ffffff !important;
-  color: #2b2f44 !important;
-  border: 1px solid #e6e8f1 !important;
-}
-
-.landing-page :deep(.landing-section) {
-  --so-blue: #2a3fe0;
-  --so-blue-press: #1f30b5;
-  --so-blue-soft: #eef1ff;
-  --so-ink: #0d1020;
-  --so-ink-2: #2b2f44;
-  --so-mute: #5a5f78;
-  --so-line: #e6e8f1;
-  --so-badge: #e85a6b;
-  --so-badge-bg: #fff5f5;
-  --so-badge-line: #ffd9dd;
-  color: var(--so-ink) !important;
-}
-
-.landing-page :deep(.pain-bg),
-.landing-page :deep(.demo-bg),
-.landing-page :deep(.pipe-bg),
-.landing-page :deep(.modes-bg),
-.landing-page :deep(.lab-bg),
-.landing-page :deep(.aud-bg),
-.landing-page :deep(.roi-bg),
-.landing-page :deep(.cmp-bg),
-.landing-page :deep(.sec-bg),
-.landing-page :deep(.pr-bg),
-.landing-page :deep(.faq-bg) {
-  background:
-    radial-gradient(950px 520px at 18% -12%, #e6ecff 0%, rgba(230, 236, 255, 0) 62%),
-    radial-gradient(820px 480px at 100% 10%, #f1f5ff 0%, rgba(241, 245, 255, 0) 64%),
-    linear-gradient(180deg, #ffffff 0%, #f7f8ff 100%) !important;
-}
-
-.landing-page :deep(.noise),
-.landing-page :deep(.big-wordmark) {
-  display: none !important;
-}
-
-.landing-page :deep(.landing-section h2),
-.landing-page :deep(.landing-section h3),
-.landing-page :deep(.landing-section h4),
-.landing-page :deep(.landing-section strong),
-.landing-page :deep(.landing-section .big-value),
-.landing-page :deep(.landing-section .metric-value),
-.landing-page :deep(.landing-section .stat-value),
-.landing-page :deep(.landing-section .plan-price) {
-  color: var(--so-ink) !important;
-  background: none !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-.landing-page :deep(.landing-section p),
-.landing-page :deep(.landing-section li),
-.landing-page :deep(.landing-section em),
-.landing-page :deep(.landing-section .head p),
-.landing-page :deep(.landing-section .stat-label),
-.landing-page :deep(.landing-section .stat-source),
-.landing-page :deep(.landing-section .chart-head span),
-.landing-page :deep(.landing-section .meta-label),
-.landing-page :deep(.landing-section .period),
-.landing-page :deep(.landing-section .plan-tag),
-.landing-page :deep(.landing-section .acc-body),
-.landing-page :deep(.landing-section .footer) {
-  color: var(--so-mute) !important;
-}
-
-.landing-page :deep(.landing-section .kicker),
-.landing-page :deep(.landing-section .cta-tag),
-.landing-page :deep(.landing-section .panel-tag),
-.landing-page :deep(.landing-section .side-tag),
-.landing-page :deep(.landing-section .status-pill),
-.landing-page :deep(.landing-section .featured-tag),
-.landing-page :deep(.landing-section .save-badge),
-.landing-page :deep(.landing-section .sandbox-tag) {
-  background: var(--so-badge-bg) !important;
-  color: var(--so-badge) !important;
-  border: 1px solid var(--so-badge-line) !important;
-  box-shadow: none !important;
-}
-
-.landing-page :deep(.landing-section .stat-card),
-.landing-page :deep(.landing-section .calc),
-.landing-page :deep(.landing-section .slider-block),
-.landing-page :deep(.landing-section .res-line),
-.landing-page :deep(.landing-section .window),
-.landing-page :deep(.landing-section .preset),
-.landing-page :deep(.landing-section .stage-card),
-.landing-page :deep(.landing-section .track),
-.landing-page :deep(.landing-section .tab),
-.landing-page :deep(.landing-section .panel),
-.landing-page :deep(.landing-section .metric-card),
-.landing-page :deep(.landing-section .logo-placeholder),
-.landing-page :deep(.landing-section .mode-card .front),
-.landing-page :deep(.landing-section .mode-card .back),
-.landing-page :deep(.landing-section .control-card),
-.landing-page :deep(.landing-section .big-card),
-.landing-page :deep(.landing-section .split-bar),
-.landing-page :deep(.landing-section .meta),
-.landing-page :deep(.landing-section .chart),
-.landing-page :deep(.landing-section .email-form),
-.landing-page :deep(.landing-section .slider),
-.landing-page :deep(.landing-section .side),
-.landing-page :deep(.landing-section .dash),
-.landing-page :deep(.landing-section .table),
-.landing-page :deep(.landing-section .plan),
-.landing-page :deep(.landing-section .addon),
-.landing-page :deep(.landing-section .acc-item),
-.landing-page :deep(.landing-section .final-cta),
-.landing-page :deep(.landing-section .footer),
-.landing-page :deep(.landing-section .report),
-.landing-page :deep(.landing-section .composer input),
-.landing-page :deep(.landing-section .composer button),
-.landing-page :deep(.landing-section .window-bar),
-.landing-page :deep(.landing-section .chat-head),
-.landing-page :deep(.landing-section .chat-scroll) {
-  background: #ffffff !important;
-  border: 1px solid var(--so-line) !important;
-  color: var(--so-ink-2) !important;
-  box-shadow: 0 1px 2px rgba(15, 18, 40, 0.04), 0 8px 24px rgba(15, 18, 40, 0.05) !important;
-}
-
-.landing-page :deep(.landing-section .before),
-.landing-page :deep(.landing-section .after) {
-  background: #ffffff !important;
-}
-
-.landing-page :deep(.landing-section .cta),
-.landing-page :deep(.landing-section .play-btn),
-.landing-page :deep(.landing-section .preview-btn),
-.landing-page :deep(.landing-section .cta-primary),
-.landing-page :deep(.landing-section .report-close),
-.landing-page :deep(.landing-section .ms-copy.copied) {
-  background: var(--so-blue) !important;
-  color: #ffffff !important;
-  border: 1px solid var(--so-blue) !important;
-  box-shadow: 0 10px 24px rgba(42, 63, 224, 0.24) !important;
-}
-
-.landing-page :deep(.landing-section .cta:hover),
-.landing-page :deep(.landing-section .play-btn:hover),
-.landing-page :deep(.landing-section .preview-btn:hover),
-.landing-page :deep(.landing-section .cta-primary:hover) {
-  background: var(--so-blue-press) !important;
-}
-
-.landing-page :deep(.landing-section button),
-.landing-page :deep(.landing-section .mic-btn),
-.landing-page :deep(.landing-section .ctl),
-.landing-page :deep(.landing-section .acc-btn),
-.landing-page :deep(.landing-section .preset),
-.landing-page :deep(.landing-section .level-btn),
-.landing-page :deep(.landing-section .region-btn),
-.landing-page :deep(.landing-section .step-btn),
-.landing-page :deep(.landing-section .mode-btn),
-.landing-page :deep(.landing-section .tab),
-.landing-page :deep(.landing-section .billing-toggle button) {
-  background: #eef1ff !important;
-  color: #2b2f44 !important;
-  border: 1px solid #d8dbea !important;
-}
-
-.landing-page :deep(.landing-section button.active),
-.landing-page :deep(.landing-section .preset.active),
-.landing-page :deep(.landing-section .tab.active),
-.landing-page :deep(.landing-section .step-btn.active),
-.landing-page :deep(.landing-section .level-btn.active),
-.landing-page :deep(.landing-section .region-btn.active),
-.landing-page :deep(.landing-section .billing-toggle button.active),
-.landing-page :deep(.landing-section .mode-btn.active) {
-  background: var(--so-blue-soft) !important;
-  color: var(--so-blue) !important;
-  border-color: #cbd4ff !important;
-  box-shadow: 0 0 0 3px rgba(42, 63, 224, 0.12) !important;
-}
-
-.landing-page :deep(.landing-section .stat-icon),
-.landing-page :deep(.landing-section .card-icon),
-.landing-page :deep(.landing-section .tab-icon),
-.landing-page :deep(.landing-section .bullet-icon),
-.landing-page :deep(.landing-section .mode-icon),
-.landing-page :deep(.landing-section .msg-avatar),
-.landing-page :deep(.landing-section [style*='--accent']) {
-  background: #eef1ff !important;
-  color: var(--so-blue) !important;
-  --accent: #2a3fe0 !important;
-}
-
-.landing-page :deep(.landing-section .good),
-.landing-page :deep(.landing-section .rb-label),
-.landing-page :deep(.landing-section .check),
-.landing-page :deep(.landing-section .dr-score),
-.landing-page :deep(.landing-section .row-label),
-.landing-page :deep(.landing-section .pipe-arrow),
-.landing-page :deep(.landing-section .meta strong),
-.landing-page :deep(.landing-section .chart-head strong),
-.landing-page :deep(.landing-section .rec-cell.best i),
-.landing-page :deep(.landing-section .rec-cell.good i),
-.landing-page :deep(.landing-section .rec-cell.ok i) {
-  color: var(--so-blue) !important;
-  background: none !important;
-}
-
-.landing-page :deep(.landing-section .bad),
-.landing-page :deep(.landing-section .error-toast),
-.landing-page :deep(.landing-section .rec-cell.bad i) {
-  color: var(--so-badge) !important;
-  background: none !important;
-}
-
-.landing-page :deep(.landing-section input[type='range']) {
-  accent-color: var(--so-blue) !important;
+  .landing-footer-col--brand {
+    grid-column: 1 / -1;
+    max-width: 560px;
+  }
 }
 
 @media (max-width: 760px) {
   .container {
-    width: min(1320px, calc(100% - 22px));
+    width: min(1320px, calc(100% - 32px));
   }
 
   .landing-header-inner {
@@ -794,7 +813,11 @@ onBeforeUnmount(() => {
   }
 
   .hero {
-    padding: 48px 0 72px;
+    padding: 32px 0 40px;
+  }
+
+  .hero::after {
+    width: min(1320px, calc(100% - 32px));
   }
 
   .hero__h1--motion {
@@ -803,6 +826,42 @@ onBeforeUnmount(() => {
 
   .hero__line--type {
     white-space: normal;
+  }
+
+  .landing-footer {
+    padding: 0 0 28px;
+  }
+
+  .landing-footer-inner {
+    padding-top: 40px;
+  }
+
+  .landing-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px 24px;
+  }
+
+  .landing-footer-col--brand {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+
+  .landing-footer-mark {
+    width: 26px;
+    height: 26px;
+  }
+
+  .landing-footer-brand strong {
+    font-size: 22px;
+  }
+
+  .landing-footer-col--brand p {
+    font-size: 14px;
+  }
+
+  .landing-footer-bottom {
+    margin-top: 32px;
+    padding-top: 16px;
   }
 }
 </style>
