@@ -27,7 +27,7 @@
       </div>
 
       <div class="stage">
-        <transition name="fade-slide" mode="out-in">
+        <transition name="fade-slide">
           <div :key="active" class="stage-card reveal">
             <div class="stage-visual">
               <component :is="stages[active]" />
@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref, computed, h, onMounted } from 'vue'
+import { ref, computed, h, onMounted, onBeforeUnmount } from 'vue'
 import SectionScaffold from './shared/SectionScaffold.vue'
 
 const steps = [
@@ -162,17 +162,52 @@ const StageShare = {
 
 const StageInterview = {
   setup() {
+    const visible = ref(0)
+    const typing = ref(false)
+    const messages = [
+      { role: 'ai', text: 'Здравствуйте! Расскажите про последний проект.' },
+      { role: 'user', text: 'Финтех-платформа: Go, PostgreSQL, React.' },
+      { role: 'ai', text: 'Какой объём трафика выдерживала?' },
+      { role: 'user', text: '~12K RPS, p99 латентность 80 мс.' },
+      { role: 'ai', text: 'Как организовали мониторинг и алерты?' },
+      { role: 'user', text: 'Prometheus + Grafana, алерты в Slack on-call.' },
+    ]
+    let timer = 0
+
+    function step() {
+      if (visible.value >= messages.length) {
+        timer = window.setTimeout(() => {
+          visible.value = 0
+          typing.value = false
+          timer = window.setTimeout(step, 600)
+        }, 2600)
+        return
+      }
+      typing.value = true
+      timer = window.setTimeout(() => {
+        typing.value = false
+        visible.value++
+        timer = window.setTimeout(step, 1100)
+      }, 700)
+    }
+
+    onMounted(() => {
+      timer = window.setTimeout(step, 400)
+    })
+    onBeforeUnmount(() => {
+      window.clearTimeout(timer)
+    })
+
     return () => h('div', { class: 'mock-interview' }, [
-      h('div', { class: 'mi-orb' }, [
-        h('div', { class: 'mi-orb-inner' }),
-        h('div', { class: 'mi-bars' }, [...Array(12)].map((_, i) =>
-          h('span', { style: { animationDelay: `${i * 0.05}s` } })
-        )),
-      ]),
-      h('div', { class: 'mi-bubbles' }, [
-        h('div', { class: 'mi-bubble ai' }, 'Расскажите о последнем проекте'),
-        h('div', { class: 'mi-bubble user' }, 'Я строил...'),
-        h('div', { class: 'mi-bubble ai' }, 'Какую сложность преодолели?'),
+      h('div', { class: 'mi-chat' }, [
+        ...messages.slice(0, visible.value).map((m, i) =>
+          h('div', { class: ['mi-bubble', m.role], key: i }, m.text)
+        ),
+        typing.value && visible.value < messages.length
+          ? h('div', { class: ['mi-bubble', 'mi-typing', messages[visible.value].role], key: 'typing' }, [
+              h('span'), h('span'), h('span'),
+            ])
+          : null,
       ]),
     ])
   },
@@ -298,6 +333,7 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 .step-btn.done { color: var(--so-surface); }
 
 .stage {
+  position: relative;
   min-height: 460px;
 }
 .stage-card {
@@ -305,28 +341,28 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
   grid-template-columns: 1.1fr 1fr;
   gap: 32px;
   padding: 32px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, var(--so-surface), var(--so-surface));
-  border: 1px solid var(--so-surface);
   align-items: start;
   opacity: 1;
   transform: none;
 }
 
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.18s ease;
+}
 .fade-slide-enter-from { opacity: 0; }
-.fade-slide-enter-active { transition: opacity 0.22s ease; }
 .fade-slide-leave-to { opacity: 0; }
-.fade-slide-leave-active { transition: opacity 0.18s ease; }
+.fade-slide-leave-active {
+  position: absolute;
+  inset: 0;
+}
 
 .stage-visual {
-  border-radius: 18px;
-  background: linear-gradient(180deg, var(--so-surface) 0%, var(--so-surface) 100%);
   padding: 28px;
   min-height: 360px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  border: 1px solid var(--so-surface);
 }
 
 .stage-step {
@@ -342,8 +378,6 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 }
 .stage-info h3 {
   margin-top: 18px;
-  font-size: clamp(28px, 3vw, 40px);
-  color: var(--so-surface);
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
@@ -408,15 +442,42 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 :deep(.ms-toast-dot) { width: 7px; height: 7px; border-radius: 999px; background: var(--so-brand); animation: pulse-rec 1.4s infinite; }
 @keyframes slidein { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
 
-:deep(.mock-interview) { display: flex; align-items: center; gap: 22px; }
-:deep(.mi-orb) { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
-:deep(.mi-orb-inner) { position: absolute; inset: 0; border-radius: 999px; background: radial-gradient(circle at 50% 30%, var(--so-brand), var(--so-brand) 50%, var(--so-surface)); box-shadow: 0 12px 32px color-mix(in srgb, var(--so-brand) 12%, transparent); }
-:deep(.mi-bars) { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 3px; }
-:deep(.mi-bars span) { display: block; width: 3px; background: var(--so-surface); border-radius: 2px; height: 30%; animation: bar 0.8s ease-in-out infinite; }
-:deep(.mi-bubbles) { display: flex; flex-direction: column; gap: 8px; }
-:deep(.mi-bubble) { padding: 10px 14px; border-radius: 14px; font-size: 13px; max-width: 240px; }
-:deep(.mi-bubble.ai) { background: var(--so-surface); color: var(--so-surface); align-self: flex-start; }
-:deep(.mi-bubble.user) { background: var(--so-brand); color: var(--so-surface); align-self: flex-end; }
+:deep(.mock-interview) { width: 100%; display: flex; align-items: stretch; }
+:deep(.mi-chat) { display: flex; flex-direction: column; gap: 10px; width: 100%; min-height: 280px; }
+:deep(.mi-bubble) {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  max-width: 78%;
+  animation: mi-bubble-in 0.32s var(--so-ease) both;
+}
+:deep(.mi-bubble.ai) { align-self: flex-start; }
+:deep(.mi-bubble.user) { align-self: flex-end; }
+:deep(.mi-typing) {
+  display: inline-flex;
+  gap: 5px;
+  padding: 12px 14px;
+  align-items: center;
+}
+:deep(.mi-typing span) {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.5;
+  animation: mi-typing 1.1s ease-in-out infinite;
+}
+:deep(.mi-typing span:nth-child(2)) { animation-delay: 0.15s; }
+:deep(.mi-typing span:nth-child(3)) { animation-delay: 0.3s; }
+@keyframes mi-bubble-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes mi-typing {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
+  40% { transform: scale(1); opacity: 1; }
+}
 
 :deep(.mock-report) { width: 100%; }
 :deep(.mr-score) { display: flex; align-items: baseline; gap: 8px; color: var(--so-surface); }
@@ -446,7 +507,6 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 
 .head h2 {
   color: var(--so-ink);
-  font-size: clamp(36px, 4.5vw, 56px);
 }
 
 .head p,
@@ -470,8 +530,13 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 .stage-card,
 .stage-visual {
   background: var(--so-surface);
-  border-color: var(--so-line);
-  border-radius: 8px;
+  border: 1px solid var(--so-line);
+  border-radius: var(--so-radius-md);
+  box-shadow: var(--so-shadow-sm);
+}
+
+.stage-visual {
+  background: var(--so-surface-2);
   box-shadow: none;
 }
 
@@ -489,13 +554,19 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
   background: var(--so-surface);
   border-color: var(--so-line);
   color: var(--so-ink);
+  border-radius: var(--so-radius-sm);
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s var(--so-ease);
+}
+
+.step-btn:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
+  transform: translateY(-1px);
 }
 
 .step-btn.active {
-  background: var(--so-surface);
+  background: color-mix(in srgb, var(--so-brand) 6%, var(--so-surface));
   border-color: var(--so-brand);
   color: var(--so-brand);
-  box-shadow: none;
 }
 
 .step-btn.done,
@@ -506,7 +577,6 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 
 .stage-info h3 {
   color: var(--so-ink);
-  font-size: clamp(22px, 2.2vw, 28px);
 }
 
 .stage-info li svg {
@@ -515,8 +585,8 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
 
 .ctl:hover {
   border-color: var(--so-brand);
-  background: var(--so-surface);
   color: var(--so-brand);
+  transform: translateY(-1px);
 }
 
 :deep(.mf-head),
@@ -562,10 +632,21 @@ const stages = [StageCreate, StageShare, StageInterview, StageReport]
   border: 1px solid var(--so-line);
 }
 
-:deep(.ms-toast-dot),
-:deep(.mi-orb-inner) {
+:deep(.ms-toast-dot) {
   background: var(--so-brand);
   box-shadow: none;
+}
+
+:deep(.mi-typing) {
+  background: var(--so-surface-2);
+  color: var(--so-mute);
+  border: 1px solid var(--so-line);
+}
+
+:deep(.mi-typing.user) {
+  background: var(--so-brand);
+  color: var(--so-surface);
+  border-color: var(--so-brand);
 }
 
 :deep(.mi-bubble) {
