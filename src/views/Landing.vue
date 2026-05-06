@@ -300,10 +300,8 @@ onBeforeUnmount(() => {
   color: var(--so-ink);
 }
 
-.landing-footer-brand:focus,
-.landing-footer-brand:focus-visible {
+.landing-footer-brand:focus {
   outline: none;
-  box-shadow: none;
 }
 
 .landing-footer-mark {
@@ -452,10 +450,8 @@ onBeforeUnmount(() => {
   color: var(--so-brand);
 }
 
-.landing-brand:focus,
-.landing-brand:focus-visible {
+.landing-brand:focus {
   outline: none;
-  box-shadow: none;
 }
 
 @media (min-width: 1101px) {
@@ -501,7 +497,7 @@ onBeforeUnmount(() => {
 }
 
 .header-cta {
-  min-height: 44px;
+  min-height: var(--so-control-h);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -509,14 +505,17 @@ onBeforeUnmount(() => {
   padding: 0 18px;
   background: var(--so-brand);
   border: 1px solid var(--so-brand);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--so-ink) 4%, transparent);
+  box-shadow: var(--so-shadow-sm);
   color: var(--so-surface);
   font-weight: 700;
   text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s var(--so-ease);
 }
 
 .header-cta:hover {
-  background: color-mix(in srgb, var(--so-brand) 86%, var(--so-ink));
+  background: var(--so-brand-hover);
+  border-color: var(--so-brand-hover);
+  transform: translateY(-1px);
 }
 
 .hero {
@@ -638,17 +637,29 @@ onBeforeUnmount(() => {
 }
 
 .hero__type-frame {
+  --hh-color: color-mix(in srgb, var(--so-mute) 45%, var(--so-surface));
   position: relative;
-  display: inline-block;
-  border: 1.5px dashed var(--so-line);
-  border-radius: 6px;
-  padding: 0 0.12em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.06em 0.22em 0.22em;
+  line-height: 1;
   color: var(--so-mute);
+  background-image:
+    linear-gradient(90deg, var(--hh-color) 50%, transparent 50%),
+    linear-gradient(90deg, var(--hh-color) 50%, transparent 50%),
+    linear-gradient(0deg, var(--hh-color) 50%, transparent 50%),
+    linear-gradient(0deg, var(--hh-color) 50%, transparent 50%);
+  background-size: 18px 1.5px, 18px 1.5px, 1.5px 18px, 1.5px 18px;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
 }
 
 .hero__type-text {
+  display: inline-block;
   font-weight: 800;
   letter-spacing: -0.03em;
+  line-height: 1;
 }
 
 .hero__handles {
@@ -659,11 +670,10 @@ onBeforeUnmount(() => {
 
 .hh {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  background: var(--so-surface);
-  border: 1.5px solid var(--so-mute);
-  border-radius: 2px;
+  width: 10px;
+  height: 10px;
+  background: var(--hh-color);
+  border-radius: 999px;
 }
 
 .hh-tl {
@@ -713,8 +723,9 @@ onBeforeUnmount(() => {
 .hero__sub--motion {
   color: var(--so-mute);
   font-size: clamp(15px, 1.4vw, 18px);
-  max-width: 640px;
+  max-width: 680px;
   margin: 6px auto 0;
+  text-wrap: balance;
 }
 
 .hero__ctas--single {
@@ -726,22 +737,26 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
+  height: var(--so-control-h-lg);
   padding: 0 32px;
   border-radius: 999px;
   font-weight: 700;
   text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s var(--so-ease), box-shadow 0.2s ease;
 }
 
 .btn--pill {
   background: var(--so-brand);
   color: var(--so-surface);
   border: 1px solid var(--so-brand);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--so-ink) 4%, transparent);
+  box-shadow: var(--so-shadow-md);
 }
 
 .btn--pill:hover {
-  background: color-mix(in srgb, var(--so-brand) 86%, var(--so-ink));
+  background: var(--so-brand-hover);
+  border-color: var(--so-brand-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--so-shadow-lg);
 }
 
 .rhythm-strip {

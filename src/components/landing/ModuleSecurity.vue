@@ -1,7 +1,6 @@
 <template>
   <section id="security" class="security-strip" aria-label="Безопасность StageOne">
     <div class="security-inner">
-      <span class="strip-label">Security</span>
       <div class="security-items">
         <span v-for="item in items" :key="item.title">
           <i v-html="item.icon"></i>
@@ -36,7 +35,7 @@ const items = [
 
 <style scoped>
 .security-strip {
-  min-height: 96px;
+  min-height: 104px;
   display: flex;
   align-items: center;
   background: var(--so-surface-2);
@@ -48,12 +47,8 @@ const items = [
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 22px;
-  padding: 24px 0;
-}
-
-.strip-label {
-  display: none;
+  gap: 24px;
+  padding: 28px 0;
 }
 
 .security-items {
@@ -67,13 +62,20 @@ const items = [
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: var(--so-control-h);
   border: 1px solid var(--so-line);
   border-radius: 999px;
   background: var(--so-surface);
   color: var(--so-ink);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s var(--so-ease);
+}
+
+.security-items span:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
+  color: var(--so-brand);
+  transform: translateY(-1px);
 }
 
 i {
@@ -90,22 +92,25 @@ i :deep(svg) {
 
 a {
   color: var(--so-brand);
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--so-brand-hover);
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1024px) {
+  .security-items {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
   .security-inner {
     grid-template-columns: 1fr;
     width: min(1400px, calc(100% - 32px));
-  }
-
-  .security-items {
-    grid-template-columns: 1fr 1fr;
   }
 }
 

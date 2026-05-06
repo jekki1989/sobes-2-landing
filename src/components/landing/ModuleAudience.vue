@@ -1,7 +1,6 @@
 <template>
   <section id="audience" class="audience-strip" aria-label="Кому подходит StageOne">
     <div class="audience-inner">
-      <span class="strip-label">Для кого</span>
       <div class="segment-row">
         <span v-for="segment in segments" :key="segment">{{ segment }}</span>
       </div>
@@ -33,33 +32,36 @@ const segments = [
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 20px;
-  padding: 24px 0;
+  gap: 24px;
+  padding: 28px 0;
   border-top: 1px solid var(--so-line);
   border-bottom: 1px solid var(--so-line);
-}
-
-.strip-label {
-  display: none;
 }
 
 .segment-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .segment-row span {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
-  padding: 0 14px;
+  min-height: var(--so-control-h);
+  padding: 0 18px;
   border: 1px solid var(--so-line);
   border-radius: 999px;
   background: var(--so-surface);
   color: var(--so-ink);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s var(--so-ease);
+}
+
+.segment-row span:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
+  color: var(--so-brand);
+  transform: translateY(-1px);
 }
 
 strong {
@@ -70,7 +72,7 @@ strong {
   text-align: right;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 900px) {
   .audience-inner {
     grid-template-columns: 1fr;
     width: min(1400px, calc(100% - 32px));

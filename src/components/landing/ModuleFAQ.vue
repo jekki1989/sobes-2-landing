@@ -5,10 +5,13 @@
       <div class="big-wordmark" aria-hidden="true">StageOne</div>
     </template>
 
+    <div class="faq-head reveal">
+      <span class="kicker">FAQ</span>
+      <h2>Частые вопросы</h2>
+    </div>
+
     <div class="faq-layout">
       <div class="faq-col reveal">
-        <span class="kicker">FAQ</span>
-        <h2>Частые вопросы</h2>
         <div class="accordion">
           <div
             v-for="(q, i) in faqs"
@@ -196,19 +199,20 @@ const faqs = [
   border-radius: 999px; border: 1px solid color-mix(in srgb, var(--so-brand) 12%, transparent);
 }
 
-.faq-col h2 {
+.faq-head {
+  margin-bottom: 36px;
+}
+
+.faq-head h2 {
   margin: 18px 0 0;
-  font-size: clamp(34px, 4vw, 56px);
   line-height: 1.05;
   letter-spacing: -0.03em;
-  color: var(--so-surface);
 }
 
 .accordion {
-  margin-top: 28px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
 }
 
 .acc-item {
@@ -232,11 +236,12 @@ const faqs = [
 
 .acc-btn {
   width: 100%;
+  min-height: var(--so-control-h);
   display: grid;
   grid-template-columns: 36px 1fr 28px;
   gap: 14px;
   align-items: center;
-  padding: 12px 18px;
+  padding: 14px 18px;
   border: none;
   background: transparent;
   color: var(--so-surface);
@@ -245,15 +250,8 @@ const faqs = [
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  outline: none;
-  box-shadow: none;
   border-radius: inherit;
   -webkit-tap-highlight-color: transparent;
-}
-.acc-btn:focus,
-.acc-btn:focus-visible {
-  outline: none;
-  box-shadow: none;
 }
 .acc-btn::-moz-focus-inner {
   border: 0;
@@ -287,7 +285,7 @@ const faqs = [
 }
 .acc-body > p {
   margin: 0;
-  padding: 12px 18px 12px 68px;
+  padding: 6px 18px 18px 68px;
   color: var(--so-mute);
   font-size: 14px;
   line-height: 1.6;
@@ -297,19 +295,11 @@ const faqs = [
   display: flex;
   flex-direction: column;
   gap: 28px;
-  /* Align right column top edge with the first FAQ row, not with the H2 */
-  margin-top: calc(18px + (clamp(36px, 4.5vw, 56px) * 1.05) + 28px);
+  align-self: start;
 }
 
 .final-cta {
   padding: 36px;
-  border-radius: 28px;
-  background:
-    radial-gradient(80% 80% at 100% 0%, color-mix(in srgb, var(--so-brand) 12%, transparent), transparent 70%),
-    radial-gradient(60% 60% at 0% 100%, color-mix(in srgb, var(--so-brand) 10%, transparent), transparent 70%),
-    linear-gradient(180deg, color-mix(in srgb, var(--so-brand) 12%, transparent), color-mix(in srgb, var(--so-brand) 12%, transparent));
-  border: 1px solid color-mix(in srgb, var(--so-brand) 12%, transparent);
-  box-shadow: 0 32px 80px -20px color-mix(in srgb, var(--so-brand) 12%, transparent);
   position: relative;
   overflow: hidden;
 }
@@ -341,8 +331,6 @@ const faqs = [
 
 .cta-headline {
   margin-top: 18px;
-  font-size: clamp(28px, 3.4vw, 44px);
-  color: var(--so-surface);
   letter-spacing: -0.03em;
   line-height: 1.05;
 }
@@ -389,10 +377,9 @@ const faqs = [
   display: none;
 }
 
-.faq-col h2,
+.faq-head h2,
 .cta-headline {
   color: var(--so-ink);
-  font-size: clamp(36px, 4.5vw, 56px);
 }
 
 .kicker,
@@ -409,17 +396,29 @@ const faqs = [
   letter-spacing: 0.12em;
 }
 
-.acc-item,
-.final-cta {
+.acc-item {
   background: var(--so-surface);
   border-color: var(--so-line);
-  border-radius: 8px;
-  box-shadow: none;
+  border-radius: var(--so-radius-md);
+  box-shadow: var(--so-shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--so-ease);
+}
+
+.acc-item:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
 }
 
 .acc-item.open {
   background: var(--so-surface);
   border-color: var(--so-brand);
+  box-shadow: var(--so-shadow-md);
+}
+
+.final-cta {
+  background: var(--so-surface);
+  border: 1px solid var(--so-line);
+  border-radius: var(--so-radius-lg);
+  box-shadow: var(--so-shadow-md);
 }
 
 .acc-btn,

@@ -173,7 +173,7 @@ const addons = [
   padding: 6px 12px; background: color-mix(in srgb, var(--so-brand) 12%, transparent);
   border-radius: 999px; border: 1px solid color-mix(in srgb, var(--so-brand) 12%, transparent);
 }
-.head h2 { margin-top: 18px; font-size: clamp(34px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.03em; color: var(--so-surface); }
+.head h2 { margin-top: 18px; line-height: 1.05; letter-spacing: -0.03em; }
 .head p { margin-top: 12px; color: var(--so-mute); font-size: 17px; }
 
 .billing-toggle {
@@ -226,23 +226,11 @@ const addons = [
 .plan {
   position: relative;
   padding: 32px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, var(--so-surface), var(--so-surface));
-  border: 1px solid var(--so-surface);
   display: flex;
   flex-direction: column;
   gap: 20px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.25s var(--so-ease), box-shadow 0.25s ease, border-color 0.2s ease;
 }
-.plan:hover { transform: translateY(-4px); }
-
-.plan.featured {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--so-brand) 12%, transparent), color-mix(in srgb, var(--so-brand) 12%, transparent));
-  border-color: color-mix(in srgb, var(--so-brand) 12%, transparent);
-  box-shadow: 0 28px 60px -20px color-mix(in srgb, var(--so-brand) 12%, transparent), inset 0 1px 0 var(--so-surface);
-  transform: scale(1.04);
-}
-.plan.featured:hover { transform: scale(1.04) translateY(-4px); }
 
 .featured-tag {
   position: absolute;
@@ -407,7 +395,6 @@ const addons = [
 
 .head h2 {
   color: var(--so-ink);
-  font-size: clamp(36px, 4.5vw, 56px);
 }
 
 .head p,
@@ -428,50 +415,64 @@ const addons = [
   letter-spacing: 0.12em;
 }
 
-.billing-toggle,
-.plan,
-.addons,
-.addon {
+.billing-toggle {
   background: var(--so-surface);
-  border-color: var(--so-line);
-  box-shadow: none;
-}
-
-.billing-toggle,
-.plan,
-.addons {
-  border-radius: 8px;
+  border: 1px solid var(--so-line);
+  border-radius: 999px;
+  padding: 4px;
+  box-shadow: var(--so-shadow-sm);
 }
 
 .billing-toggle button {
-  background: var(--so-surface);
+  background: transparent;
   color: var(--so-mute);
+  border-radius: 999px;
 }
 
 .billing-toggle button.active {
-  background: var(--so-surface);
+  background: color-mix(in srgb, var(--so-brand) 8%, var(--so-surface));
   color: var(--so-brand);
   box-shadow: none;
   border: 1px solid var(--so-brand);
 }
 
-.save-badge,
-.featured-tag {
+.plan,
+.addons {
   background: var(--so-surface);
-  color: var(--so-brand);
   border: 1px solid var(--so-line);
-  box-shadow: none;
+  border-radius: var(--so-radius-md);
+  box-shadow: var(--so-shadow-sm);
 }
 
-.plan:hover,
-.plan.featured,
-.plan.featured:hover {
-  transform: none;
+.addon {
+  background: var(--so-surface-2);
+  border: 1px solid var(--so-line);
+  border-radius: var(--so-radius-sm);
+}
+
+.plan:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
+  box-shadow: var(--so-shadow-md);
 }
 
 .plan.featured {
   background: var(--so-surface);
   border-color: var(--so-brand);
+  box-shadow: var(--so-shadow-lg);
+}
+
+.plan.featured:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--so-shadow-lg);
+}
+
+.save-badge,
+.featured-tag {
+  background: color-mix(in srgb, var(--so-brand) 8%, var(--so-surface));
+  color: var(--so-brand);
+  border: 1px solid var(--so-brand);
+  box-shadow: none;
 }
 
 .plan-name,
@@ -488,21 +489,35 @@ const addons = [
   background: var(--so-surface);
 }
 
+.cta {
+  border-radius: 999px;
+  min-height: var(--so-control-h);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s var(--so-ease), box-shadow 0.2s ease;
+}
+
 .cta-primary {
   background: var(--so-brand);
   color: var(--so-surface);
-  box-shadow: none;
+  border: 1px solid var(--so-brand);
+  box-shadow: var(--so-shadow-sm);
+}
+
+.cta-primary:hover {
+  background: var(--so-brand-hover);
+  border-color: var(--so-brand-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--so-shadow-md);
 }
 
 .cta-light {
   background: var(--so-surface);
   color: var(--so-ink);
-  border-color: var(--so-line);
+  border: 1px solid var(--so-line);
 }
 
-.cta-light:hover,
-.cta-primary:hover {
-  transform: none;
+.cta-light:hover {
   border-color: var(--so-brand);
+  color: var(--so-brand);
+  transform: translateY(-1px);
 }
 </style>

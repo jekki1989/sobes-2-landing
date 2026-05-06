@@ -189,8 +189,9 @@ onBeforeUnmount(() => {
   gap: 28px;
   align-items: stretch;
   border: 1px solid var(--so-line);
-  border-radius: 8px;
+  border-radius: var(--so-radius-md);
   background: var(--so-surface);
+  box-shadow: var(--so-shadow-sm);
   padding: 32px;
 }
 
@@ -295,6 +296,7 @@ onBeforeUnmount(() => {
   background: var(--so-surface);
   color: var(--so-ink);
   cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s var(--so-ease), box-shadow 0.2s ease;
 }
 
 .preview-action {
@@ -302,13 +304,21 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 48px;
+  min-height: var(--so-control-h);
   border-radius: 999px;
   padding: 0 20px;
   color: var(--so-surface);
   background: var(--so-brand);
   border-color: var(--so-brand);
   font-weight: 800;
+  box-shadow: var(--so-shadow-sm);
+}
+
+.preview-action:hover {
+  background: var(--so-brand-hover);
+  border-color: var(--so-brand-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--so-shadow-md);
 }
 
 .mode-controls {
@@ -327,9 +337,14 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 46px;
+  min-height: var(--so-control-h);
   border-radius: 999px;
   font-weight: 800;
+}
+
+.mode-btn:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
+  color: var(--so-brand);
 }
 
 .mode-btn svg {
@@ -340,6 +355,7 @@ onBeforeUnmount(() => {
 .mode-btn.active {
   color: var(--so-brand);
   border-color: var(--so-brand);
+  background: color-mix(in srgb, var(--so-brand) 6%, var(--so-surface));
 }
 
 .mode-detail {
@@ -394,13 +410,18 @@ onBeforeUnmount(() => {
   gap: 12px;
   align-items: center;
   min-height: 74px;
-  border-radius: 8px;
+  border-radius: var(--so-radius-sm);
   padding: 12px;
   text-align: left;
 }
 
+.avatar-tile:hover {
+  border-color: color-mix(in srgb, var(--so-brand) 30%, var(--so-line));
+}
+
 .avatar-tile.active {
   border-color: var(--so-brand);
+  background: color-mix(in srgb, var(--so-brand) 6%, var(--so-surface));
 }
 
 .avatar-tile.locked {
