@@ -43,7 +43,7 @@
           <h1 class="hero__h1 hero__h1--motion">
             <span class="hero__line">ИИ-сотрудник, который</span>
             <span class="hero__line hero__line--type">
-              <span class="hero__sizer" aria-hidden="true">отсеет неподходящих кандидатов</span>
+              <span class="hero__sizer" aria-hidden="true">отсеет слабых соискателей</span>
               <span class="hero__type-frame">
                 <span class="hero__type-text">{{ typedPhrase || '\u00A0' }}</span>
                 <span class="hero__handles" aria-hidden="true">
@@ -189,11 +189,11 @@ function onScroll() {
 }
 
 const phrases = [
-  'проведет собеседование',
-  'задаст вопросы кандидатам',
-  'оценит каждого кандидата',
-  'отсеет неподходящих кандидатов',
-  'найдёт идеального кандидата',
+  'проведёт собеседование',
+  'задаст нужные вопросы',
+  'оценит каждый ответ',
+  'отсеет слабых соискателей',
+  'найдёт лучших',
 ]
 
 const typedPhrase = ref('')
